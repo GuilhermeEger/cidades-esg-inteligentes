@@ -85,16 +85,16 @@ docker compose -p residuos-production --env-file deploy/production.env up -d --b
  │ 1. Build │──►│ 2. Testes    │──►│ 3. Imagem Docker │──►│ 4. Deploy        │──►│ 5. Deploy        │
  │          │   │  (9 xUnit)   │   │  push no GHCR    │   │    STAGING       │ ⏸ │    PRODUÇÃO      │
  └──────────┘   └──────────────┘   └──────────────────┘   │  + smoke test    │   │  + smoke test    │
-  ubuntu-latest   ubuntu-latest       ubuntu-latest        └──────────────────┘   └──────────────────┘
+  ubuntu-24.04    ubuntu-24.04        ubuntu-24.04         └──────────────────┘   └──────────────────┘
                                                              runner self-hosted   aprovação manual +
                                                                                   runner self-hosted
 ```
 
 | # | Job | Onde roda | O que faz |
 |---|---|---|---|
-| 1 | **Build** | GitHub (ubuntu-latest) | `dotnet restore` + `dotnet build -c Release` + `dotnet publish`; guarda o pacote como artefato |
-| 2 | **Testes automatizados** | GitHub (ubuntu-latest) | `dotnet test`: 9 testes de integração (xUnit + WebApplicationFactory + EF InMemory). Resultado no resumo do job e relatório `.trx` como artefato |
-| 3 | **Imagem Docker (GHCR)** | GitHub (ubuntu-latest) | Build multi-arquitetura (amd64 + arm64) com Buildx e push para o **GitHub Container Registry** com a tag `sha-<commit>` e `latest` |
+| 1 | **Build** | GitHub (ubuntu-24.04) | `dotnet restore` + `dotnet build -c Release` + `dotnet publish`; guarda o pacote como artefato |
+| 2 | **Testes automatizados** | GitHub (ubuntu-24.04) | `dotnet test`: 9 testes de integração (xUnit + WebApplicationFactory + EF InMemory). Resultado no resumo do job e relatório `.trx` como artefato |
+| 3 | **Imagem Docker (GHCR)** | GitHub (ubuntu-24.04) | Build multi-arquitetura (amd64 + arm64) com Buildx e push para o **GitHub Container Registry** com a tag `sha-<commit>` e `latest` |
 | 4 | **Deploy Staging** | Servidor *self-hosted* | Baixa a imagem, sobe o ambiente com Docker Compose (`-p residuos-staging`, porta **8081**) e roda o **smoke test** |
 | 5 | **Deploy Produção** | Servidor *self-hosted* | **Só começa após aprovação manual** no GitHub. Publica a **mesma imagem** validada em staging (porta **8080**) e roda o smoke test |
 

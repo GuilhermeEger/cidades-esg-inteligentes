@@ -2,7 +2,7 @@
 # Pipeline CI/CD — Cidades ESGInteligentes (API de Gestão de Resíduos)
 #
 #   1. Build ──► 2. Testes ──► 3. Imagem Docker ──► 4. Deploy Staging ──► 5. Deploy Produção
-#   (máquinas do GitHub)                            (servidor self-hosted) (após aprovação manual)
+#   (GitHub, ubuntu-24.04)                          (servidor self-hosted) (após aprovação manual)
 #
 # - Pull requests rodam só build + testes (validação, sem deploy).
 # - Push na main roda o fluxo completo.
@@ -30,13 +30,13 @@ jobs:
   # -------------------------------------------------------------------
   build:
     name: 1. Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Baixar o código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Instalar .NET 8
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -50,7 +50,7 @@ jobs:
         run: dotnet publish src/ResiduosApi/ResiduosApi.csproj -c Release --no-build -o publish
 
       - name: Guardar artefato do build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: residuos-api-${{ github.sha }}
           path: publish
@@ -60,13 +60,13 @@ jobs:
   test:
     name: 2. Testes automatizados
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Baixar o código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Instalar .NET 8
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -81,7 +81,7 @@ jobs:
 
       - name: Guardar relatório dos testes
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: resultado-testes
           path: TestResults
@@ -91,7 +91,7 @@ jobs:
     name: 3. Imagem Docker (GHCR)
     needs: test
     if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -99,7 +99,7 @@ jobs:
       image: ${{ steps.nome.outputs.image }}
     steps:
       - name: Baixar o código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Definir nome e tag da imagem
         id: nome
@@ -114,13 +114,13 @@ jobs:
 
       # QEMU + Buildx: gera a imagem para amd64 (servidores Linux) e arm64 (Mac Apple Silicon).
       - name: Preparar QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Preparar Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login no GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Build e push da imagem
         id: push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -175,7 +175,7 @@ jobs:
       API_PASSWORD: ${{ secrets.API_PASSWORD }}
     steps:
       - name: Baixar o código (compose e scripts)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Login no GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -217,7 +217,7 @@ jobs:
       API_PASSWORD: ${{ secrets.API_PASSWORD }}
     steps:
       - name: Baixar o código (compose e scripts)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Login no GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
