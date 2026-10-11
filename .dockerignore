@@ -1,0 +1,15 @@
+# Só o código da API entra no contexto de build da imagem.
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+.git/
+.github/
+tests/
+docs/
+deploy/
+*.md
+.env
+.env.*
+!.env.example
+*.zip

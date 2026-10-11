@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BEFF7805-5B52-4F46-A06E-C73C9391F841}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResiduosApi", "src\ResiduosApi\ResiduosApi.csproj", "{A78DF369-8139-4EA1-8272-0BFFB7769DAC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C3DBC674-FAC6-47C3-9ECB-81F2715346E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResiduosApi.Tests", "tests\ResiduosApi.Tests\ResiduosApi.Tests.csproj", "{0CF7147D-2EE9-4EA1-8C5A-9B44B8946742}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A78DF369-8139-4EA1-8272-0BFFB7769DAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A78DF369-8139-4EA1-8272-0BFFB7769DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A78DF369-8139-4EA1-8272-0BFFB7769DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A78DF369-8139-4EA1-8272-0BFFB7769DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CF7147D-2EE9-4EA1-8C5A-9B44B8946742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CF7147D-2EE9-4EA1-8C5A-9B44B8946742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CF7147D-2EE9-4EA1-8C5A-9B44B8946742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CF7147D-2EE9-4EA1-8C5A-9B44B8946742}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A78DF369-8139-4EA1-8272-0BFFB7769DAC} = {BEFF7805-5B52-4F46-A06E-C73C9391F841}
+		{0CF7147D-2EE9-4EA1-8C5A-9B44B8946742} = {C3DBC674-FAC6-47C3-9ECB-81F2715346E7}
+	EndGlobalSection
+EndGlobal

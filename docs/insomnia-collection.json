@@ -1,0 +1,203 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-06-17T00:00:00.000Z",
+  "__export_source": "fiap-residuos-dotnet:v1",
+  "resources": [
+    {
+      "_id": "wrk_residuos_net",
+      "_type": "workspace",
+      "name": "API Gestao de Residuos .NET 8 (FIAP)",
+      "description": "Fase 04 - .NET Core 8 Web API. Endpoints /api/v1. JWT Bearer em /pontos-coleta e /coletas; /tipos-residuo e /indicadores publicos. Rode primeiro o Login e copie o token para a variavel de ambiente 'token'.",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base_net",
+      "_type": "environment",
+      "parentId": "wrk_residuos_net",
+      "name": "Base Environment",
+      "data": {
+        "baseUrl": "http://localhost:8080",
+        "usuario": "admin",
+        "senha": "admin123",
+        "token": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["baseUrl", "usuario", "senha", "token"]
+      },
+      "isPrivate": false,
+      "metaSortKey": 1000
+    },
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_residuos_net",
+      "name": "Auth",
+      "description": "Autenticacao. Rode o Login, copie o 'token' da resposta para a variavel de ambiente 'token'.",
+      "metaSortKey": -4000
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "POST login",
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/auth/login",
+      "headers": [{"name": "Content-Type", "value": "application/json"}],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"usuario\": \"{{ _.usuario }}\",\n  \"senha\": \"{{ _.senha }}\"\n}"
+      },
+      "authentication": {"type": "none"},
+      "metaSortKey": -4000
+    },
+    {
+      "_id": "fld_ponto",
+      "_type": "request_group",
+      "parentId": "wrk_residuos_net",
+      "name": "PontoColeta",
+      "description": "CRUD de pontos de coleta. Exige JWT Bearer.",
+      "metaSortKey": -3000
+    },
+    {
+      "_id": "req_ponto_list",
+      "_type": "request",
+      "parentId": "fld_ponto",
+      "name": "GET list (paginado)",
+      "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/pontos-coleta",
+      "parameters": [
+        {"name": "pagina", "value": "1", "disabled": false},
+        {"name": "tamanho", "value": "10", "disabled": false}
+      ],
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -3000
+    },
+    {
+      "_id": "req_ponto_detail",
+      "_type": "request",
+      "parentId": "fld_ponto",
+      "name": "GET /{id}",
+      "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/pontos-coleta/1",
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -2900
+    },
+    {
+      "_id": "req_ponto_create",
+      "_type": "request",
+      "parentId": "fld_ponto",
+      "name": "POST cria",
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/pontos-coleta",
+      "headers": [{"name": "Content-Type", "value": "application/json"}],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Ecoponto Vila Madalena\",\n  \"endereco\": \"Rua Harmonia, 100\",\n  \"latitude\": -23.5450,\n  \"longitude\": -46.6890,\n  \"capacidadeKg\": 500.00\n}"
+      },
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -2800
+    },
+    {
+      "_id": "req_ponto_update",
+      "_type": "request",
+      "parentId": "fld_ponto",
+      "name": "PUT /{id}",
+      "method": "PUT",
+      "url": "{{ _.baseUrl }}/api/v1/pontos-coleta/1",
+      "headers": [{"name": "Content-Type", "value": "application/json"}],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Container Pinheiros\",\n  \"endereco\": \"Av. Faria Lima, 2000\",\n  \"latitude\": -23.5670,\n  \"longitude\": -46.6920,\n  \"capacidadeKg\": 1500.00,\n  \"ativo\": true\n}"
+      },
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -2700
+    },
+    {
+      "_id": "req_ponto_delete",
+      "_type": "request",
+      "parentId": "fld_ponto",
+      "name": "DELETE /{id} (soft)",
+      "method": "DELETE",
+      "url": "{{ _.baseUrl }}/api/v1/pontos-coleta/1",
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -2600
+    },
+    {
+      "_id": "fld_tipo",
+      "_type": "request_group",
+      "parentId": "wrk_residuos_net",
+      "name": "TipoResiduo",
+      "description": "Listagem dos 6 tipos. Publico.",
+      "metaSortKey": -2000
+    },
+    {
+      "_id": "req_tipo_list",
+      "_type": "request",
+      "parentId": "fld_tipo",
+      "name": "GET list (publico)",
+      "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/tipos-residuo",
+      "authentication": {"type": "none"},
+      "metaSortKey": -2000
+    },
+    {
+      "_id": "fld_coleta",
+      "_type": "request_group",
+      "parentId": "wrk_residuos_net",
+      "name": "Coleta",
+      "description": "Registro e consulta de coletas. Exige JWT Bearer.",
+      "metaSortKey": -1000
+    },
+    {
+      "_id": "req_coleta_create",
+      "_type": "request",
+      "parentId": "fld_coleta",
+      "name": "POST registra",
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/coletas",
+      "headers": [{"name": "Content-Type", "value": "application/json"}],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"pontoColetaId\": 1,\n  \"tipoResiduoId\": 1,\n  \"pesoKg\": 50.0,\n  \"dataColeta\": \"2026-06-17T08:30:00\",\n  \"responsavel\": \"Maria Silva\"\n}"
+      },
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -1000
+    },
+    {
+      "_id": "req_coleta_list",
+      "_type": "request",
+      "parentId": "fld_coleta",
+      "name": "GET list com filtros",
+      "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/coletas",
+      "parameters": [
+        {"name": "pontoId", "value": "1", "disabled": true},
+        {"name": "tipoId", "value": "1", "disabled": true},
+        {"name": "de", "value": "2026-06-01T00:00:00", "disabled": true},
+        {"name": "ate", "value": "2026-06-30T23:59:59", "disabled": true},
+        {"name": "tamanho", "value": "20", "disabled": false}
+      ],
+      "authentication": {"type": "bearer", "token": "{{ _.token }}"},
+      "metaSortKey": -900
+    },
+    {
+      "_id": "fld_indicador",
+      "_type": "request_group",
+      "parentId": "wrk_residuos_net",
+      "name": "Indicadores",
+      "description": "Visao agregada global. Publico.",
+      "metaSortKey": 0
+    },
+    {
+      "_id": "req_indicador",
+      "_type": "request",
+      "parentId": "fld_indicador",
+      "name": "GET indicadores (publico)",
+      "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/indicadores",
+      "authentication": {"type": "none"},
+      "metaSortKey": 0
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+# =====================================================================
+# Orquestração: API + SQL Server
+# ---------------------------------------------------------------------
+# O MESMO arquivo serve para os três ambientes. O que muda entre eles
+# vem de variáveis de ambiente:
+#   - local ......... .env (copie de .env.example)
+#   - staging ....... deploy/staging.env    + secrets do GitHub
+#   - produção ...... deploy/production.env + secrets do GitHub
+# Cada ambiente roda como um "projeto" Compose separado
+# (-p residuos-staging / -p residuos-production), então containers,
+# rede e volume ficam isolados: staging nunca toca no banco de produção.
+# =====================================================================
+name: residuos-local
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    # A imagem do SQL Server só existe para amd64; em Mac Apple Silicon
+    # roda via emulação (Rosetta).
+    platform: linux/amd64
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD (veja .env.example)}
+      MSSQL_MEMORY_LIMIT_MB: ${DB_MEMORY_LIMIT_MB:-2048}
+    volumes:
+      - db-data:/var/opt/mssql          # dados persistem entre deploys
+    networks:
+      - backend                         # banco NÃO fica exposto ao host
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  api:
+    # No pipeline, API_IMAGE aponta para a imagem publicada no GHCR
+    # (ex.: ghcr.io/usuario/cidades-esg-inteligentes:sha-abc1234).
+    # Localmente, o "docker compose up --build" constrói a partir do Dockerfile.
+    image: ${API_IMAGE:-residuos-api:local}
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-local}
+    depends_on:
+      db:
+        condition: service_healthy      # só sobe depois que o banco responde
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${APP_ENV:-Development}
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=${DB_NAME:-ResiduosDb};User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+      Jwt__Secret: ${JWT_SECRET:?Defina JWT_SECRET (veja .env.example)}
+      Auth__Usuario: ${API_USER:-admin}
+      Auth__Senha: ${API_PASSWORD:?Defina API_PASSWORD (veja .env.example)}
+      Swagger__Enabled: ${SWAGGER_ENABLED:-true}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    networks:
+      - backend                         # fala com o banco
+      - frontend                        # recebe as requisições externas
+    restart: unless-stopped
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true                      # rede interna: sem acesso de fora
+
+volumes:
+  db-data:

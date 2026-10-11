@@ -1,0 +1,6 @@
+@ResiduosApi_HostAddress = http://localhost:5062
+
+GET {{ResiduosApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
