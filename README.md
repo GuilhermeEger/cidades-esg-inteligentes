@@ -102,6 +102,7 @@ docker compose -p residuos-production --env-file deploy/production.env up -d --b
 
 - **Gatilhos:** `push` na `main` executa o fluxo completo; `pull_request` executa só build + testes
   (valida o código sem publicar nada); `workflow_dispatch` permite rodar manualmente.
+  Alterações só em documentação (`docs/` e arquivos `.md`) não disparam o pipeline.
 - **Falhou, parou:** cada job depende do anterior (`needs`). Teste quebrado = nada é publicado;
   staging com problema = produção não recebe a versão.
 - **Build once, deploy many:** a imagem é gerada uma vez e promovida de staging para produção,
