@@ -1,0 +1,66 @@
+[
+  [
+    "01-pipeline-aprovacao-e-artefatos.png",
+    "Execução pública do pipeline: 5 jobs, aprovação registrada para production e artefatos gerados"
+  ],
+  [
+    "02-job-1-build.png",
+    "Job 1 — Build: restore, compilação Release, publish e artefato"
+  ],
+  [
+    "03-job-2-testes.png",
+    "Job 2 — Testes automatizados com xUnit"
+  ],
+  [
+    "04-job-3-imagem-docker.png",
+    "Job 3 — QEMU + Buildx, login no GHCR, build e push da imagem"
+  ],
+  [
+    "05-job-4-deploy-staging.png",
+    "Job 4 — Deploy em staging: login no GHCR, Docker Compose e smoke test"
+  ],
+  [
+    "06-job-5-deploy-producao.png",
+    "Job 5 — Deploy em produção: mesmos passos, após aprovação manual"
+  ],
+  [
+    "07-log-testes.png",
+    "Log do job de testes e relatório .trx baixado dos artefatos: 9 testes aprovados"
+  ],
+  [
+    "08-log-deploy-staging.png",
+    "Log do job de deploy em staging: runner self-hosted, Docker Compose e smoke test"
+  ],
+  [
+    "09-log-deploy-producao.png",
+    "Log do job de deploy em produção: mesma imagem, novo ambiente e smoke test"
+  ],
+  [
+    "10-github-ambientes.png",
+    "Environments do GitHub (production com revisor obrigatório) e deploys registrados"
+  ],
+  [
+    "11-staging-swagger.png",
+    "Staging (http://localhost:8081/swagger): Swagger habilitado"
+  ],
+  [
+    "12-staging-funcionando.png",
+    "Staging respondendo em http://localhost:8081: ambiente, versão, saúde e dados do banco"
+  ],
+  [
+    "13-producao-funcionando.png",
+    "Produção respondendo em http://localhost:8080: mesma versão de staging, banco saudável, indicadores e Swagger bloqueado"
+  ],
+  [
+    "14-producao-swagger-desligado.png",
+    "Produção (http://localhost:8080/swagger): Swagger desligado por segurança (HTTP 404)"
+  ],
+  [
+    "15-servidor-containers.png",
+    "Servidor de deploy: containers de staging e produção (API + banco), todos healthy"
+  ],
+  [
+    "16-servidor-volumes-redes-imagem.png",
+    "Volumes, redes e imagem publicada pelo pipeline no servidor"
+  ]
+]

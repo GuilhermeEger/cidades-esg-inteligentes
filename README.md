@@ -194,7 +194,105 @@ ENTRYPOINT ["dotnet", "ResiduosApi.dll"]
 > https://github.com/GuilhermeEger/cidades-esg-inteligentes/actions
 
 <!-- PRINTS -->
-_Prints serão adicionados após a primeira execução completa do pipeline._
+> **Onde os ambientes estão hospedados:** staging e produção rodam em containers Docker reais na máquina do aluno,
+> registrada como *self-hosted runner* (o "servidor de deploy"), e são acessados em `localhost`. Em uma empresa, o
+> mesmo runner ficaria em um servidor/VM na nuvem com domínio público, sem nenhuma mudança no pipeline.
+
+A documentação completa com todas as evidências está em
+[`docs/FIAP-Fase6-DevOps-GuilhermeEgerPereira-RM97069.pdf`](docs/FIAP-Fase6-DevOps-GuilhermeEgerPereira-RM97069.pdf).
+
+### 🔄 Pipeline rodando (execução [#3](https://github.com/GuilhermeEger/cidades-esg-inteligentes/actions/runs/38284813510))
+
+**Pipeline em andamento: build, testes e imagem concluídos; deploy em staging rodando**
+
+![Pipeline em andamento: build, testes e imagem concluídos; deploy em staging rodando](docs/prints/manual/manual-pipeline-staging-em-andamento.png)
+
+**Aprovação manual do deploy em produção (Review pending deployments → Approve and deploy)**
+
+![Aprovação manual do deploy em produção (Review pending deployments → Approve and deploy)](docs/prints/manual/manual-aprovacao-producao.png)
+
+**Após a aprovação: deploy em produção em andamento**
+
+![Após a aprovação: deploy em produção em andamento](docs/prints/manual/manual-deploy-producao-em-andamento.png)
+
+**Execução concluída: os 5 jobs verdes, com os links dos dois ambientes**
+
+![Execução concluída: os 5 jobs verdes, com os links dos dois ambientes](docs/prints/manual/manual-pipeline-sucesso.png)
+
+**Execução pública do pipeline: 5 jobs, aprovação registrada para production e artefatos gerados**
+
+![Execução pública do pipeline: 5 jobs, aprovação registrada para production e artefatos gerados](docs/prints/01-pipeline-aprovacao-e-artefatos.png)
+
+### 🧪 Build e testes
+
+**Job 1 — Build: restore, compilação Release, publish e artefato**
+
+![Job 1 — Build: restore, compilação Release, publish e artefato](docs/prints/02-job-1-build.png)
+
+**Job 2 — Testes automatizados com xUnit**
+
+![Job 2 — Testes automatizados com xUnit](docs/prints/03-job-2-testes.png)
+
+**Log do job de testes e relatório .trx baixado dos artefatos: 9 testes aprovados**
+
+![Log do job de testes e relatório .trx baixado dos artefatos: 9 testes aprovados](docs/prints/07-log-testes.png)
+
+### 🐳 Imagem Docker
+
+**Job 3 — QEMU + Buildx, login no GHCR, build e push da imagem**
+
+![Job 3 — QEMU + Buildx, login no GHCR, build e push da imagem](docs/prints/04-job-3-imagem-docker.png)
+
+**Volumes, redes e imagem publicada pelo pipeline no servidor**
+
+![Volumes, redes e imagem publicada pelo pipeline no servidor](docs/prints/16-servidor-volumes-redes-imagem.png)
+
+### 🚀 Deploy em staging e produção
+
+**Job 4 — Deploy em staging: login no GHCR, Docker Compose e smoke test**
+
+![Job 4 — Deploy em staging: login no GHCR, Docker Compose e smoke test](docs/prints/05-job-4-deploy-staging.png)
+
+**Log do job de deploy em staging: runner self-hosted, Docker Compose e smoke test**
+
+![Log do job de deploy em staging: runner self-hosted, Docker Compose e smoke test](docs/prints/08-log-deploy-staging.png)
+
+**Job 5 — Deploy em produção: mesmos passos, após aprovação manual**
+
+![Job 5 — Deploy em produção: mesmos passos, após aprovação manual](docs/prints/06-job-5-deploy-producao.png)
+
+**Log do job de deploy em produção: mesma imagem, novo ambiente e smoke test**
+
+![Log do job de deploy em produção: mesma imagem, novo ambiente e smoke test](docs/prints/09-log-deploy-producao.png)
+
+**Environments do GitHub (production com revisor obrigatório) e deploys registrados**
+
+![Environments do GitHub (production com revisor obrigatório) e deploys registrados](docs/prints/10-github-ambientes.png)
+
+### 🟡 Staging funcionando — http://localhost:8081
+
+**Staging (http://localhost:8081/swagger): Swagger habilitado**
+
+![Staging (http://localhost:8081/swagger): Swagger habilitado](docs/prints/11-staging-swagger.png)
+
+**Staging respondendo em http://localhost:8081: ambiente, versão, saúde e dados do banco**
+
+![Staging respondendo em http://localhost:8081: ambiente, versão, saúde e dados do banco](docs/prints/12-staging-funcionando.png)
+
+### 🟢 Produção funcionando — http://localhost:8080
+
+**Produção respondendo em http://localhost:8080: mesma versão de staging, banco saudável, indicadores e Swagger bloqueado**
+
+![Produção respondendo em http://localhost:8080: mesma versão de staging, banco saudável, indicadores e Swagger bloqueado](docs/prints/13-producao-funcionando.png)
+
+**Produção (http://localhost:8080/swagger): Swagger desligado por segurança (HTTP 404)**
+
+![Produção (http://localhost:8080/swagger): Swagger desligado por segurança (HTTP 404)](docs/prints/14-producao-swagger-desligado.png)
+
+**Servidor de deploy: containers de staging e produção (API + banco), todos healthy**
+
+![Servidor de deploy: containers de staging e produção (API + banco), todos healthy](docs/prints/15-servidor-containers.png)
+
 <!-- /PRINTS -->
 
 ---
